@@ -46,18 +46,18 @@ module ActiveRecord
               UNION ALL
               SELECT table_owner, table_name, 'SYNONYM' name_type
               FROM all_synonyms
-              WHERE owner = :table_owner
-                AND synonym_name = :table_name
+              WHERE synonym_name = :table_name
               UNION ALL
               SELECT table_owner, table_name, 'SYNONYM' name_type
               FROM all_synonyms
               WHERE owner = 'PUBLIC'
                 AND synonym_name = :real_name
             SQL
-            if result = _select_one(sql, "CONNECTION", [table_owner, table_name, table_owner, table_name, table_owner, table_name, real_name])
+            if result = _select_one(sql, "CONNECTION", [table_owner, table_name, table_owner, table_name, table_name, real_name])
               case result["name_type"]
               when "SYNONYM"
-                describe("#{result['owner'] && "#{result['owner']}."}#{result['table_name']}")
+                # describe("#{result['owner'] && "#{result['owner']}."}#{result['table_name']}")
+                [table_owner, result["table_name"]]
               else
                 [result["owner"], result["table_name"]]
               end
